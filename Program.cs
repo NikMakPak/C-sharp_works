@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,60 +6,51 @@ using System.Threading.Tasks;
 
 namespace shop_nikmak
 {
-    struct amoPrice
+    struct WPriceCorp
     {
         public int sum10;
         public int sum100;
         public int sum1000;
 
-        public amoPrice(int sum10, int sum100, int sum1000)
+        public WPriceCorp(int sum10, int sum100, int sum1000)
         {
             this.sum10 = sum10;
             this.sum100 = sum100;
             this.sum1000 = sum1000;
         }
     }
-    struct Wholesale
+    struct WPriceClient
     {
-        public amoPrice[] amoPricesClient;
-        public amoPrice[] amoPricesCorp;
+        public int sum10;
+        public int sum100;
+        public int sum1000;
 
-        public Wholesale(amoPrice[] amoPricesClient, amoPrice[] amoPricesCorp)
+        public WPriceClient(int sum10, int sum100, int sum1000)
         {
-            this.amoPricesClient = amoPricesClient;
-            this.amoPricesCorp = amoPricesCorp;
+            this.sum10 = sum10;
+            this.sum100 = sum100;
+            this.sum1000 = sum1000;
         }
     }
-    struct Basic
+    struct BPrice
     {
-        public int client;
-        public int corp;
+        public int client,corp;
 
-        public Basic(int client, int corp)
+        public BPrice(int client, int corp)
         {
             this.client = client;
             this.corp = corp;
         }
-    }
-    struct Price
-    {
-        public Basic[] basics;
-        public Wholesale[] wholesales;
-
-        public Price(Basic[] basics, Wholesale[] wholesales)
+        public void Print()
         {
-            this.basics = basics;
-            this.wholesales = wholesales;
+            Console.WriteLine("\t\t\tЦена\n\t\t\t\tБазовая:\n\t\t\t\t\tКлиентская:{0}\n\t\t\t\t\tКорпоративная:{1}",client,corp);
         }
+
     }
+    
     struct Parameter
     {
-        public string hieght;
-        public string wieght;
-        public string length;
-        public string quantity;
-        public string shelfLife;
-        public string color;
+        public string hieght,wieght,length,quantity,shelfLife,color;
 
         public Parameter(string hieght = null, string wieght = null, string length = null, string quantity = null, string shelfLife = null, string color = null)
         {
@@ -70,44 +61,53 @@ namespace shop_nikmak
             this.shelfLife = shelfLife;
             this.color = color;
         }
+        public void Print()
+        {
+            Console.WriteLine("\t\t\tПараметры:\n\t\t\t\tВысота: {0}\n\t\t\t\tВес: {1}\n\t\t\t\tДлина: {2}", hieght, wieght, length);
+            Console.WriteLine("\t\t\t\tКол-во: {0}\n\t\t\t\tСрок годности: {1}\n\t\t\t\tЦвет: {2}", quantity, shelfLife, color);
+        }
     }
     struct Product
     {
-        public string title;
-        public string typi;
-        public string discountClass;
-        public Parameter[] parameters;
-        public Price[] prices;
+        public string title,typi,discountClass;
 
-        public Product(string type, string className, string title, string typi, string discountClass, Parameter[] parameters, Price[] prices) : this(type, className)
+        public Product(string title, string typi, string discountClass)
         {
             this.title = title;
             this.typi = typi;
             this.discountClass = discountClass;
-            this.parameters = parameters;
-            this.prices = prices;
+        }
+        public void Print()
+        {
+            Console.WriteLine("\t\tТовар {0}:\n\t\t\tТип: {1}\n\t\t\tКласс: {2}", title, typi, discountClass);
         }
     }
     struct Stand
     {
         public string number;
-        public Product[] products;
 
-        public Stand(string number, Product[] products)
+        public Stand(string number)
         {
             this.number = number;
-            this.products = products;
+        }
+        public void Print()
+        {
+            Console.WriteLine("\tСтойка {0}:", number);
         }
     }
     struct Shop
     {
-        public string name;
-        public Stand[] stands;
+        public string name, loyalty;
 
-        public Shop(string name, Stand[] stands)
+        public Shop(string name, string loyalty)
         {
             this.name = name;
-            this.stands = stands;
+            this.loyalty = loyalty;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine("Имя магазина: {0}\n\tТип лояльности: {1}",name, loyalty);
         }
     }
 
@@ -115,21 +115,21 @@ namespace shop_nikmak
     {
         static void Main(string[] args)
         {
+            WPriceCorp p1 = new WPriceCorp(100,1000,10000);
 
-            Stand stand1 = new Stand(number:"1",
-                new Product[] { 
-                    new Product("техника","эконом",new Parameter(color:"red"))
-                }
-                );
-            Shop shop1 = new Shop(
-                name:"Рога",
-                stands: new[] 
-                {
-                    stand1
-                }
-            );
-            
-            Console.WriteLine(Shop);
+            Parameter param1 = new Parameter("120 см", "1 кг", "50 см", "1 шт", "2 года","красный");
+            Product prod1 = new Product("Чайник", "Бытовая техника", "эконом");
+            Stand st1 = new Stand("1");
+            Shop shop1 = new Shop("рога и копыта","серебро");
+            shop1.Print();
+            st1.Print();
+            prod1.Print();
+            param1.Print();
+            if (shop1.loyalty== "базовый")
+            {
+                Console.WriteLine("yes");
+            }
+            Console.ReadKey();
         }
     }
 }
