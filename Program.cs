@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +8,7 @@ namespace shop_nikmak
 {
     struct WPriceCorp
     {
-        public int sum10;
-        public int sum100;
-        public int sum1000;
+        public double sum10, sum100, sum1000;
 
         public WPriceCorp(int sum10, int sum100, int sum1000)
         {
@@ -18,12 +16,14 @@ namespace shop_nikmak
             this.sum100 = sum100;
             this.sum1000 = sum1000;
         }
+        public void Print()
+        {
+            Console.WriteLine("\t\t\t\t\tКорпоративная");
+        }
     }
     struct WPriceClient
     {
-        public int sum10;
-        public int sum100;
-        public int sum1000;
+        public double sum10, sum100, sum1000;
 
         public WPriceClient(int sum10, int sum100, int sum1000)
         {
@@ -31,19 +31,57 @@ namespace shop_nikmak
             this.sum100 = sum100;
             this.sum1000 = sum1000;
         }
+        public void Print()
+        {
+            Console.WriteLine("\t\t\t\tОптовая:\n\t\t\t\t\tКлиентская:");
+        }
     }
     struct BPrice
     {
-        public int client,corp;
+        public double client,corp;
 
         public BPrice(int client, int corp)
         {
             this.client = client;
             this.corp = corp;
         }
+        public void Cost(string tip, string disc)
+            {
+                switch (tip)
+                {
+                    case "базовый":
+                        client *= 0.95;
+                        corp *= 0.95;
+                        break;
+                    case "серебро":
+                        client *= 0.90;
+                        corp *= 0.90;
+                        break;
+                    case "золото":
+                        client *= 0.85;
+                        corp *= 0.85;
+                        break;
+                }
+
+                switch (disc)
+                {
+                    case "эконом":
+                        client *= 0.95;
+                        corp *= 0.98;
+                        break;
+                    case "стандарт":
+                        client *= 0.93;
+                        corp *= 0.96;
+                        break;
+                    case "премиум":
+                        client *= 0.90;
+                        corp *= 0.95;
+                        break;
+                }
+        }
         public void Print()
         {
-            Console.WriteLine("\t\t\tЦена\n\t\t\t\tБазовая:\n\t\t\t\t\tКлиентская:{0}\n\t\t\t\t\tКорпоративная:{1}",client,corp);
+            Console.WriteLine("\t\t\tЦена:\n\t\t\t\tБазовая:\n\t\t\t\t\tКлиентская: {0}\n\t\t\t\t\tКорпоративная: {1}", client, corp);
         }
 
     }
@@ -93,6 +131,7 @@ namespace shop_nikmak
         public void Print()
         {
             Console.WriteLine("\tСтойка {0}:", number);
+
         }
     }
     struct Shop
@@ -115,8 +154,9 @@ namespace shop_nikmak
     {
         static void Main(string[] args)
         {
-            WPriceCorp p1 = new WPriceCorp(100,1000,10000);
-
+            WPriceCorp optcorp1 = new WPriceCorp(880,820,760);
+            WPriceClient optcli1 = new WPriceClient(850,800,750);
+            BPrice price1 = new BPrice(1050,850);
             Parameter param1 = new Parameter("120 см", "1 кг", "50 см", "1 шт", "2 года","красный");
             Product prod1 = new Product("Чайник", "Бытовая техника", "эконом");
             Stand st1 = new Stand("1");
@@ -125,10 +165,12 @@ namespace shop_nikmak
             st1.Print();
             prod1.Print();
             param1.Print();
-            if (shop1.loyalty== "базовый")
-            {
-                Console.WriteLine("yes");
-            }
+
+            price1.Cost(shop1.loyalty,prod1.discountClass);
+            price1.Print();
+
+            //оптом
+
             Console.ReadKey();
         }
     }
