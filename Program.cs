@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace oop_training
 {
-    //todo: понять почему выводит пустые строки
     internal class Program
     {
         abstract public class Global
