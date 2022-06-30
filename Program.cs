@@ -10,88 +10,124 @@ namespace oop_training
     {
         class Global
         {
-            private static List<int> ids = new List<int>();
-            public Random rand = new Random((int)DateTime.Now.Ticks);
-            public string[] alph = { "а", "б", "в", "и", "у", "ж", "н", "я", };
-            public string genName()
+            static public Random rand = new Random();
+            public int genParam(int startPoint=3)
             {
-                string name = "";
-                for (int i = 0; i < rand.Next(3,10); i++)
-                {
-                    name += alph[rand.Next(alph.Length)];
-                }
-                return name;
+                return rand.Next(startPoint,13);
             }
-            public int genId()
+        }
+        abstract class Rodent : Global
+        {
+            public int size;
+            public string fullType;
+
+            protected Rodent()
             {
-                bool f = false;
-                while (f!=true)
+                size = genParam();
+            }
+            public virtual void tellAbout()
+            {
+                Console.WriteLine($"Я - {fullType}. Мой размер: {size}");
+            }
+        }
+
+        class Hamster : Rodent
+        {
+            public Hamster()
+            {
+                fullType = "Серый хомячок";
+            }
+        }
+
+        class Vole : Rodent
+        {
+            public int weight;
+            public int jump;
+
+            public Vole()
+            {
+                fullType = "Поплевка";
+                weight = genParam();
+                jump = genParam(5);
+            }
+
+            public override void tellAbout()
+            {
+                base.tellAbout();
+                Console.WriteLine($"Мой вес и прыжок: {weight}, {jump}");
+            }
+        }
+
+        class Bobr : Rodent
+        {
+            public Bobr()
+            {
+                fullType = "Бобр добр";
+            }
+        }
+
+        class Cat : Global
+        {
+            public List<Rodent> eaten = new List<Rodent>();
+            public List<Hamster> held = new List<Hamster>();
+            public string loved;
+
+            public Cat()
+            {
+                loved = "Серый хомячок";
+            }
+            public void catching(List<Rodent> rodents)
+            {
+                for (int i = 0; i < rodents.Count; i++)
                 {
-                    int id = rand.Next(100000, 1000000);
-                    if (!ids.Contains(id))
+                    if (rodents[i].size > 3)
                     {
-                       f= true;
-                       ids.Add(id);
-                       return id;
+                        if (rodents[i] is Vole vole && vole.weight >= 5 && vole.jump > 8)
+                        {
+                            habitCheck(i);
+                        }
+                        if (!(rodents[i] is Vole))
+                        {
+                            habitCheck(i);
+                        }
                     }
                 }
-                return 0;
-            }
-        }
-        class User : Global
-        {
-            public int id { get; }
-            public string name { get; }
-            public Card userCard { get; set; }
 
-            public User()
-            {
-                id = genId();
-                name = genName();
+                void habitCheck(int i)
+                {
+                    if (rodents[i] is Hamster hamst)
+                    {
+                        hamst.tellAbout();
+                        held.Add(hamst);
+                    }
+                    if (!(rodents[i] is Hamster))
+                    {
+                        eaten.Add(rodents[i]);
+                    }
+                    rodents.RemoveAt(i);
+                }
             }
-            public void tellAbout()
-            {
-                Console.WriteLine($"Меня зовут {name}. Мой id: {id}. Я владею картой: {userCard.card4numbers}");
-            }
-            public void makeCard()
-            {
-                Console.Write("Введите пин-код для вашей новой карты:");
-                userCard = new Card(this,Convert.ToInt32(Console.ReadLine()));
-                Console.WriteLine("Карта успешно выпущена!");
-            }
+            
         }
-        class Card : Global
-        {
-            public User cardHolder { get; }
-            public int card4numbers { get; }
-            public int pin { get; set; }
 
-            public Card(User cardHolder, int pin)
-            {
-                this.cardHolder = cardHolder;
-                this.card4numbers = rand.Next(1000,10000);
-                this.pin = pin;
-            }
-
-            public void tellAbout()
-            {
-                Console.WriteLine($"Инфо о карте:\n\t-Хозяин: {cardHolder.name} - {cardHolder.id}\n\t-4 цифры: {card4numbers}\n\t-пин-код: {pin}");
-            }
-        }
         static void Main(string[] args)
         {
-            List<User> users = new List<User>();
-            for (int i = 0; i < 5; i++)
+            List<Rodent> rodents = new List<Rodent>();
+            for (int i = 0; i < 10; i++)
             {
-                users.Add(new User());
-                users[i].makeCard();
+                rodents.Add(new Vole());
             }
-            foreach (var u in users)
+            for (int i = 0; i < 10; i++)
             {
-                Console.WriteLine("\n");
-                u.tellAbout();
-                u.userCard.tellAbout();
+                rodents.Add(new Hamster());
             }
+            for (int i = 0; i < 10; i++)
+            {
+                rodents.Add(new Bobr());
+            }
+
+            Cat cat = new Cat();
+            cat.catching(rodents);
         }
     }
 }
